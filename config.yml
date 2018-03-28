@@ -1,0 +1,12 @@
+src_registry:
+  hostname: docker-registry.example.cloud
+  username: unused
+  password: "Password or Token"
+
+dst_registry:
+  hostname: registry.example.com
+  username: user
+  password: "Password or Token"
+
+repositories:
+  - ["example/proj1", "library/proj1"]
