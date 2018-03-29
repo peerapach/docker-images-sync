@@ -28,7 +28,7 @@ def dockerPushImage(dst_repo_url,tag_name):
     try:
         docker_client.images.push(dst_repo_url,tag_name)
     except:
-        print("Cannot pull image from " + dst_repo_url)
+        print("Can't pull image from " + dst_repo_url)
 
 if __name__ == '__main__':
 
