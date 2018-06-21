@@ -11,9 +11,9 @@ def load_config():
 
 def docker_login(registry,username,password):
     try:
-        docker_client.login(registry=registry, 
+        docker_client.login(registry=registry,
                             username=username,
-                            password=password) 
+                            password=password)
     except:
         print("Error login on" + registry)
 
@@ -44,20 +44,24 @@ if __name__ == '__main__':
     docker_client = docker.from_env()
     docker_login(src_registry,src_username,src_password)
     docker_login(dst_registry,dst_username,dst_password)
-                          
+
     repositories = config['repositories']
 
     for repository in repositories:
         src_repo_url = src_registry + "/" + repository[0]
         dst_repo_url = dst_registry + "/" + repository[1]
-        
+
+        print("\033[1;31;40mSyncing... \033[0m" + src_repo_url + "  =>  " + dst_repo_url)
+        print("\033[1;32;40mPulling ... \033[0m" + src_repo_url)
         images = docker_pull_image(src_repo_url)
-        
         for image in images:
             for tag in image.tags:
-                tag_name = tag.split(":")
-                image.tag(dst_repo_url,tag_name[1])
+               tag_name = tag.split(":")
+               if src_repo_url == tag_name[0]:
+                  image.tag(dst_repo_url,tag_name[1])
 
-                docker_push_image(dst_repo_url,tag_name[1])
+                  print("\033[1;34;40mPushing... \033[0m" + tag + "  => " + dst_repo_url +":"+ tag_name[1])
+                  docker_push_image(dst_repo_url,tag_name[1])
                 # remove destination image on sync host
-                docker_client.images.remove(dst_repo_url + ":" + tag_name[1])
+                  docker_client.images.remove(dst_repo_url + ":" + tag_name[1])
+        print("")
